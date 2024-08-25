@@ -40,8 +40,31 @@ while True:
 
         imgContours2, finalContours2 = utilities.getContours(imgWarp, showCanny=False,
                                                              minArea=2000, filter=4, cannyThreshold=[50,50],
-                                                             draw=True)
+                                                             draw=False)
+        if len(finalContours) !=0:
+            for obj in finalContours2:
+                cv2.polylines(imgContours2, [obj[2]], True, (0, 255, 0), 2)
+                #Reordering the points
+                nPoints = utilities.reorder(obj[2])
+                newWidth = (round(utilities.calcDistance(nPoints[0][0]//scaleFactor,
+                                             nPoints[1][0]//scaleFactor)/10),1) #Divided by 10 to convert mm to cm
+                # ,1 because we are ronding it to 1 decimal place
+                newHeight = (round(utilities.calcDistance(nPoints[0][0]//scaleFactor,
+                                             nPoints[2][0]//scaleFactor)/10),1)
 
+                #Adding arrowed lines
+
+                cv2.arrowedLine(imgContours2, (nPoints[0][0][0], nPoints[0][0][1]),
+                                (nPoints[1][0][0], nPoints[1][0][1]),
+                                (255, 0, 255), 3, 8, 0, 0.05)
+                cv2.arrowedLine(imgContours2, (nPoints[0][0][0], nPoints[0][0][1]),
+                                (nPoints[2][0][0], nPoints[2][0][1]),
+                                (255, 0, 255), 3, 8, 0, 0.05)
+                x, y, w, h = obj[3]
+                cv2.putText(imgContours2, '{}cm'.format(newWidth), (x + 30, y - 10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                            (255, 0, 255), 2)
+                cv2.putText(imgContours2, '{}cm'.format(newHeight), (x - 70, y + h // 2), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1.5,
+                            (255, 0, 255), 2)
         cv2.imshow("A4", imgContours2)
 
     img = cv2.resize(img, (0, 0), None, 0.5, 0.5) #Resizing the image

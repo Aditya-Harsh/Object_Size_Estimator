@@ -61,7 +61,6 @@ def warpImg(img, points, w, h, pad=20):
     return imgWarp
 
 
-
 # Reordering the points
 def reorder(myPoints):
     print(myPoints.shape)
@@ -76,4 +75,6 @@ def reorder(myPoints):
 
     return myPointsNew
 
-
+# Calculating distance using Pythagoras theorem
+def calcDistance(points1, points2):
+    return ((points2[0] - points1[0]) ** 2 + (points2[1] - points1[1]) ** 2) ** 0.5
